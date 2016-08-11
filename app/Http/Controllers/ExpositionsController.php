@@ -6,13 +6,13 @@ use App\Http\Requests;
 use App\Http\Requests\CreateExpositionsRequest;
 use App\Http\Requests\UpdateExpositionsRequest;
 use App\Repositories\ExpositionsRepository;
-use App\Http\Controllers\AppBaseController as InfyOmBaseController;
+use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
-class ExpositionsController extends InfyOmBaseController
+class ExpositionsController extends BaseController
 {
     /** @var  ExpositionsRepository */
     private $expositionsRepository;

@@ -6,67 +6,7 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @SWG\Definition(
- *      definition="Stand",
- *      required={""},
- *      @SWG\Property(
- *          property="id",
- *          description="id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="exposition_id",
- *          description="exposition_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="title",
- *          description="title",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="length",
- *          description="length",
- *          type="number",
- *          format="float"
- *      ),
- *      @SWG\Property(
- *          property="breadth",
- *          description="breadth",
- *          type="number",
- *          format="float"
- *      ),
- *      @SWG\Property(
- *          property="feature_details",
- *          description="feature_details",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="description",
- *          description="description",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="is_reserved",
- *          description="is_reserved",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="is_booked",
- *          description="is_booked",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="price",
- *          description="price",
- *          type="number",
- *          format="float"
- *      )
- * )
+ *
  */
 class Stand extends Model
 {

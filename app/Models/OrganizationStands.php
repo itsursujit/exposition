@@ -6,68 +6,7 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @SWG\Definition(
- *      definition="OrganizationStands",
- *      required={""},
- *      @SWG\Property(
- *          property="id",
- *          description="id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="image",
- *          description="image",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="organization_id",
- *          description="organization_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="exposition_id",
- *          description="exposition_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="stand_id",
- *          description="stand_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="stand_features",
- *          description="stand_features",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="visitors_count",
- *          description="visitors_count",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="is_deleted",
- *          description="is_deleted",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="created_at",
- *          description="created_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="updated_at",
- *          description="updated_at",
- *          type="string",
- *          format="date-time"
- *      )
- * )
+ *
  */
 class OrganizationStands extends Model
 {

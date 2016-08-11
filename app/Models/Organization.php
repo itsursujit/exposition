@@ -6,58 +6,7 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * @SWG\Definition(
- *      definition="Organization",
- *      required={"name", "email"},
- *      @SWG\Property(
- *          property="id",
- *          description="id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="name",
- *          description="name",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="email",
- *          description="email",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="phone",
- *          description="phone",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="logo",
- *          description="logo",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="admin_name",
- *          description="admin_name",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="admin_email",
- *          description="admin_email",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="created_at",
- *          description="created_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="updated_at",
- *          description="updated_at",
- *          type="string",
- *          format="date-time"
- *      )
- * )
+ *
  */
 class Organization extends Model
 {

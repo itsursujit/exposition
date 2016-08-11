@@ -6,13 +6,13 @@ use App\Http\Requests;
 use App\Http\Requests\CreateStandRequest;
 use App\Http\Requests\UpdateStandRequest;
 use App\Repositories\StandRepository;
-use App\Http\Controllers\AppBaseController as InfyOmBaseController;
+use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
-class StandController extends InfyOmBaseController
+class StandController extends BaseController
 {
     /** @var  StandRepository */
     private $standRepository;

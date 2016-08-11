@@ -6,13 +6,13 @@ use App\Http\Requests;
 use App\Http\Requests\CreateOrderItemsRequest;
 use App\Http\Requests\UpdateOrderItemsRequest;
 use App\Repositories\OrderItemsRepository;
-use App\Http\Controllers\AppBaseController as InfyOmBaseController;
+use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
-class OrderItemsController extends InfyOmBaseController
+class OrderItemsController extends BaseController
 {
     /** @var  OrderItemsRepository */
     private $orderItemsRepository;

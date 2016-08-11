@@ -6,13 +6,13 @@ use App\Http\Requests;
 use App\Http\Requests\CreateOrganizationRequest;
 use App\Http\Requests\UpdateOrganizationRequest;
 use App\Repositories\OrganizationRepository;
-use App\Http\Controllers\AppBaseController as InfyOmBaseController;
+use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
-class OrganizationController extends InfyOmBaseController
+class OrganizationController extends BaseController
 {
     /** @var  OrganizationRepository */
     private $organizationRepository;
