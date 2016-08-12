@@ -125,14 +125,8 @@
         <div class="row">
             <div class="col-lg-7 col-md-7 col-sm-7">
                 <div class="section-title">
-                    <h1>Upcoming Events</h1>
-                    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has <br> been the industry's standard dummy text ever since the 1500</p>
+                    <h1>Upcoming Expositions</h1>
                 </div>
-            </div>
-            <div class="col-lg-5 col-md-5 col-sm-5">
-                <form action="#" class="pull-right">
-                    <input type="text" placeholder="Search Event"> <button type="submit"><i class="fa fa-search"></i></button>
-                </form>
             </div>
         </div>
         <div class="row">
@@ -140,32 +134,28 @@
                 <div class="tab-title-wrap">
                     <ul class="clearfix">
                         <li class="filter active" data-filter="all"><span>All Event</span></li>
-                        <li class="filter" data-filter=".april-14"><span>April 14</span></li>
-                        <li class="filter" data-filter=".april-22"><span>April 22</span></li>
-                        <li class="filter" data-filter=".april-28"><span>April 28</span></li>
-                        <li class="filter" data-filter=".may-10"><span>May 10</span></li>
-                        <li class="filter" data-filter=".may-15"><span>May 15</span></li>
-                        <li class="filter" data-filter=".may-22"><span>May 22</span></li>
-                        <li class="filter" data-filter=".may-23"><span>May 23</span></li>
-                        <li class="filter" data-filter=".jun-01"><span>June 01</span></li>
+                        @foreach($dateRange as $key => $range)
+                            <li class="filter" data-filter="{{ $range }}"><span>{{ str_replace('-', ' ', str_replace('.', '', $range)) }}</span></li>
+                        @endforeach
                     </ul>
                 </div>
                 <div class="tab-content-wrap row">
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix april-14 april-22 hvr-float-shadow wow fadeIn">
+                    @foreach($expositions as $key => $exposition)
+                    <div class="col-lg-3 col-md-4 col-sm-6 mix {{ str_replace('.', '', $exposition->date_class) }} hvr-float-shadow wow fadeIn">
                         <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
                         <div class="content-wrap">
                             <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
                             <div class="meta">
                                 <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>22 April, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
+                                    <li><span><i class="fa fa-clock-o"></i>{{ $exposition->start_date }}</span></li>
+                                    <li><span><i class="fa fa-map-marker"></i>{{ $exposition->city . ',' . $exposition->state, ', ' . $exposition->country }}</span></li>
                                 </ul>
                             </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
+                            <h3>{{ substr($exposition->title,0,20).'...' }}</h3>
                             <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
                         </div>
                     </div>
+                    @endforeach
                     <div class="col-lg-3 col-md-4 col-sm-6 mix april-28 april-14 hvr-float-shadow wow fadeIn" data-wow-delay=".3s">
                         <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/2.jpg') }}" alt=""></div>
                         <div class="content-wrap">
@@ -181,96 +171,7 @@
                             <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
                         </div>
                     </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix may-10 may-22 hvr-float-shadow wow fadeIn" data-wow-delay=".6s">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/3.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>10 May, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix may-15 may-23 hvr-float-shadow wow fadeIn" data-wow-delay=".9s">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>15 May, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix may-22 hvr-float-shadow">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>15 May, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix may-23 hvr-float-shadow ">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>15 May, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix jun-01 hvr-float-shadow">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>01 June, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-md-4 col-sm-6 mix april-22 hvr-float-shadow ">
-                        <div class="img-holder"><img src="{{ URL::to('/assets/img/upcoming-event/1.jpg') }}" alt=""></div>
-                        <div class="content-wrap">
-                            <img src="{{ URL::to('/assets/img/upcoming-event/author.png') }}" alt="" class="author-img">
-                            <div class="meta">
-                                <ul>
-                                    <li><span><i class="fa fa-clock-o"></i>15 June, 2015</span></li>
-                                    <li><span><i class="fa fa-map-marker"></i>California</span></li>
-                                </ul>
-                            </div>
-                            <h3>Event Name</h3>
-                            <p>Lorem Ipsum is simply dummy text of the printing [...]</p>
-                            <a class="read-more" href="#">read more<i class="fa fa-angle-right"></i></a>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -893,9 +794,13 @@
                 results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-    var mapObj;
     var loadedExpo = [];
-    var map = new Map({firstLoad: 0, loadedExpo: loadedExpo, mapObj: mapObj});
+    var attrs = {firstLoad: 0, loadedExpo: loadedExpo};
+    var map = new Map(attrs);
+
+    $('.reload-map').on('click', function(){
+       map.show_expo();
+    });
 </script>
 </body>
 </html>

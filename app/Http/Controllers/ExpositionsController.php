@@ -35,7 +35,7 @@ class ExpositionsController extends BaseController
                 SELECT expositions.id as expo_id, expositions.title, addresses.*,
                 ( 3959 * acos( 
                 cos( radians($lat) ) * cos( radians( addresses.lat ) ) * cos( radians( addresses.lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( addresses.lat ) ) ) ) AS distance
-                FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id HAVING distance < 4100 ORDER BY distance LIMIT 0 , 50;
+                FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id AND expositions.is_live = 1 HAVING distance < 3100 ORDER BY distance LIMIT 0 , 50;
                 ");
         echo json_encode(array('data'=>$map));
     }

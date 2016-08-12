@@ -1,4 +1,12 @@
 var Map = Backbone.Model.extend({
+    events: {
+        'click .reload-map' : 'show_expo'
+    },
+    show_expo: function() {
+        if(attrs.map){
+            attrs.self.searchStoreBounds(attrs.map, attrs);
+        }
+    },
     initialize: function(attrs){
         var self= this;
         var map = null;
@@ -11,6 +19,8 @@ var Map = Backbone.Model.extend({
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById('map'), mapOption);
+        attrs.map = map;
+        attrs.self = self;
         google.maps.event.addListener(map, 'dragend', function() {
             //self.searchStoreBounds(map, attrs);
         });
@@ -61,6 +71,7 @@ var Map = Backbone.Model.extend({
             var id;
             var markers = [];
             var markersById = [];
+            var infowindow = new google.maps.InfoWindow();
             for (i = 0; i < data['data'].length; i++) {
                 attrs.loadedExpo.push(data['data'][i]['expo_id']);
                 marker = new google.maps.Marker({
@@ -77,17 +88,16 @@ var Map = Backbone.Model.extend({
                 });
                 markers[i] = marker;
                 markersById[data['data'][i]['expo_id']] = marker;
-
-                var infowindow = new google.maps.InfoWindow({
+                /*infowindow = new google.maps.InfoWindow({
                     content: '<h4>' + data['data'][i]['title'] + '</h4><p>Location: '+data['data'][i]['city'] + ', ' + data['data'][i]['state'] +'</p>'
-                });
+                });*/
                 google.maps.event.addListener(marker, 'click', (function(marker, i) {
                     return function() {
                         if(!map.getBounds().contains(marker.getPosition()))
                         {
                             map.setCenter(marker.getPosition());
                         }
-
+                        infowindow.setContent('<h4>' + data['data'][i]['title'] + '</h4><p>Location: '+data['data'][i]['city'] + ', ' + data['data'][i]['state'] +'</p>');
                         infowindow.open(map, marker);
                         var parameter = {
                             id: marker.id,
@@ -106,7 +116,8 @@ var Map = Backbone.Model.extend({
                     }
                 })(marker, i));
             }
-            console.log(attrs.loadedExpo);
+
+            //console.log(attrs.loadedExpo);
             getDataList(markers);
         }
     }

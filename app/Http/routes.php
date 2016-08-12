@@ -11,9 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/backbone', function () {
     return view('backbone');
@@ -36,7 +33,7 @@ Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
 Route::get('login', 'Auth\AuthController@getLogin');
 Route::post('login', 'Auth\AuthController@postLogin');
 Route::get('logout', 'Auth\AuthController@logout');
-
+Route::get('/', 'HomeController@index');
 // Registration Routes...
 Route::get('register', 'Auth\AuthController@getRegister');
 Route::post('register', 'Auth\AuthController@postRegister');
