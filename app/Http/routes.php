@@ -36,6 +36,7 @@ Route::get('logout', 'Auth\AuthController@logout');
 // Registration Routes...
 Route::get('register', 'Auth\AuthController@getRegister');
 Route::post('register', 'Auth\AuthController@postRegister');
+Route::get('/locate/expo', 'ExpositionsController@map');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\PasswordController@getEmail');

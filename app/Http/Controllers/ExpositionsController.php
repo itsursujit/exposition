@@ -9,6 +9,7 @@ use App\Repositories\ExpositionsRepository;
 use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -20,6 +21,15 @@ class ExpositionsController extends BaseController
     public function __construct(ExpositionsRepository $expositionsRepo)
     {
         $this->expositionsRepository = $expositionsRepo;
+    }
+
+    public function map(){
+        $map = DB::select("
+                SELECT *, 
+                ( 3959 * acos( 
+                cos( radians(lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(-122) ) + sin( radians(37) ) * sin( radians( lat ) ) ) ) AS distance FROM addresses ORDER BY distance LIMIT 0 , 20;
+                ");
+        dd($map);
     }
 
     /**

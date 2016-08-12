@@ -12,12 +12,12 @@
     <!-- responsive stylesheet -->
     <link rel="stylesheet" href="{{ URL::to('/assets/css/responsive.css') }}">
     <style>
-        #map-wrapper:hover ~ #information-bar {
+        /*#map-wrapper:hover ~ #information-bar {
             display:block;
         }
         #information-bar {
             display:none;
-        }
+        }*/
     </style>
 </head>
 <body>
@@ -859,55 +859,8 @@
 <div id="right-panel">
     <p>Total Distance: <span id="total"></span></p>
 </div>
-<script>
-    function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-            zoom: 4,
-            center: {lat: -24.345, lng: 134.46}  // Australia.
-        });
 
-        var directionsService = new google.maps.DirectionsService;
-        var directionsDisplay = new google.maps.DirectionsRenderer({
-            draggable: true,
-            map: map,
-            panel: document.getElementById('right-panel')
-        });
-
-        directionsDisplay.addListener('directions_changed', function() {
-            computeTotalDistance(directionsDisplay.getDirections());
-        });
-
-        displayRoute('Perth, WA', 'Sydney, NSW', directionsService,
-                directionsDisplay);
-    }
-
-    function displayRoute(origin, destination, service, display) {
-        service.route({
-            origin: origin,
-            destination: destination,
-            waypoints: [{location: 'Adelaide, SA'}, {location: 'Broken Hill, NSW'}],
-            travelMode: 'DRIVING',
-            avoidTolls: true
-        }, function(response, status) {
-            if (status === 'OK') {
-                display.setDirections(response);
-            } else {
-                alert('Could not display directions due to: ' + status);
-            }
-        });
-    }
-
-    function computeTotalDistance(result) {
-        var total = 0;
-        var myroute = result.routes[0];
-        for (var i = 0; i < myroute.legs.length; i++) {
-            total += myroute.legs[i].distance.value;
-        }
-        total = total / 1000;
-        document.getElementById('total').innerHTML = total + ' km';
-    }
-</script>
-<script src="https://maps.googleapis.com/maps/api/js?callback=initMap&key=AIzaSyA52TRWk7LalmXMtqCVUQTQwbFVfgcraXw">
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA52TRWk7LalmXMtqCVUQTQwbFVfgcraXw">
 </script>
 <script src="{{ URL::to('/assets/js/jquery.min.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/jquery.themepunch.tools.min.js') }}"></script>
@@ -924,13 +877,15 @@
 	<script src="{{ URL::to('/assets/js/wow.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/validate.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/custom.js') }}"></script>
-    <script>
-        /*$('#map-wrapper').on('mouseenter', function(){
-           $('#information-bar').show();
-        });
-        $('#map-wrapper').on('mouseleave', function(){
-            $('#information-bar').hide();
-        });*/
-    </script>
+    <script src="{{ URL::to('/assets/js/app.js') }}"></script>
+<script>
+    function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+</script>
 </body>
 </html>
