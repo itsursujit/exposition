@@ -10,6 +10,7 @@ use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Response;
 
@@ -24,12 +25,33 @@ class ExpositionsController extends BaseController
     }
 
     public function map(){
+        /*$bounds=explode(",", Input::get('bounds'));
+        $lat = $bounds[0]-($bounds[0]-$bounds[2])/2;
+        $lng = $bounds[1]-($bounds[1]-$bounds[3])/2;*/
+        $center = explode(",", Input::get('center'));
+        $lat = $center[0];
+        $lng = $center[1];
         $map = DB::select("
-                SELECT *, 
+                SELECT expositions.id as expo_id, expositions.title, addresses.*,
                 ( 3959 * acos( 
-                cos( radians(lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians(-122) ) + sin( radians(37) ) * sin( radians( lat ) ) ) ) AS distance FROM addresses ORDER BY distance LIMIT 0 , 20;
+                cos( radians($lat) ) * cos( radians( addresses.lat ) ) * cos( radians( addresses.lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( addresses.lat ) ) ) ) AS distance
+                FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id HAVING distance < 4100 ORDER BY distance LIMIT 0 , 50;
                 ");
-        dd($map);
+        echo json_encode(array('data'=>$map));
+    }
+
+    public function expo(){
+        $bounds=explode(",", Input::get('bounds'));
+        $lat = $bounds[0]-($bounds[0]-$bounds[2])/2;
+        $lng = $bounds[1]-($bounds[1]-$bounds[3])/2;
+        $id = Input::get('id');
+        $map = DB::select("
+                SELECT expositions.id as expo_id, expositions.title, addresses.*,
+                ( 3959 * acos(
+                cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) AS distance
+                FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id WHERE expostions.id = '$id' ORDER BY distance LIMIT 0 , 10;
+                ");
+        echo json_encode(array('data'=>$map));
     }
 
     /**

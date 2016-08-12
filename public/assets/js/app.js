@@ -21,15 +21,17 @@ var selLocation;
 /*var markers = new Array();*/
 var markerContent=[];
 var addresses={};
+var firstLoad = 0;
 initializeMap();
     function getDataList(selMarker) {
-        $.each(selMarker, function(index, marker) {
+        /*$.each(selMarker, function(index, marker) {
             var parameter = {
-                id: marker.id
+                id: marker.id,
+                bounds : map.getBounds().toUrlValue()
             };
             if (marker.address == '' || typeof marker.address == 'undefined') {
                 jQuery.ajax({
-                    url: 'getDesc.php',
+                    url: '/locate/expo',
                     data: parameter,
                     dataType: 'json',
                     success: function(data) {
@@ -38,7 +40,15 @@ initializeMap();
                 });
             }
         });
-        AutoCenter();
+        if(firstLoad == 0){
+            firstLoad = 1;
+            AutoCenter();
+        }*/
+        if(firstLoad == 0){
+            firstLoad = 1;
+            AutoCenter();
+        }
+
     }
 
     function initializeMap() {
@@ -52,15 +62,18 @@ initializeMap();
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
         map = new google.maps.Map(document.getElementById('map'), mapOptions);
-        google.maps.event.addListener(map, 'dragend', function(map) {
-            console.log('Drag End');
-        });
-        google.maps.event.addListener(map, 'dragstart', function(map) {
+        google.maps.event.addListener(map, 'dragend', function() {
             searchStoresBounds(map.getBounds().toUrlValue());
+        });
+        google.maps.event.addListener(map, 'idle', function() {
+            searchStoresBounds(map.getBounds().toUrlValue());
+        });
+        google.maps.event.addListener(map, 'dragstart', function() {
+            //searchStoresBounds(map.getBounds().toUrlValue());
         });
 
         google.maps.event.addListener(map, 'bounds_changed', function() {
-            searchStoresBounds(map.getBounds().toUrlValue());
+            //searchStoresBounds(map.getBounds().toUrlValue());
         });
 
         /*geocoder = new google.maps.Geocoder();
@@ -104,16 +117,10 @@ initializeMap();
             return;
         var bounds = map.getBounds().toUrlValue();
 
-        var url = '/locate/expo';
+        var url = '/locate/expos';
         var parameter = {
             bounds: bounds
         };
-        $.each(markers, function(index, marker) {
-            marker.setMap(null);
-            //marker.setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
-
-        });
-        selMarker = [];
         jQuery.ajax({
             url: url,
             data: parameter,
@@ -123,29 +130,29 @@ initializeMap();
     }
 
     function showStores(data, status, xhr) {
-        if (data['status'] != 'OK')
-            return;
         var id;
-
         markers = [];
         markersById = [];
         for (i = 0; i < data['data'].length; i++) {
             marker = new google.maps.Marker({
                 position: new google.maps.LatLng(data['data'][i]['lat'], data['data'][i]['lng']),
                 map: map,
-                icon: 'pin-2.png',
+                icon: '/assets/img/marker.png',
                 lat: data['data'][i]['lat'],
                 lng: data['data'][i]['lng'],
-                id: data['data'][i]['id'],
+                id: data['data'][i]['expo_id'],
                 distance: data['data'][i]['distance'],
-                status: data['data'][i]['status']/*,
+                title: data['data'][i]['title'],
+                /*,
                 zIndex: google.maps.Marker.MAX_ZINDEX + 1*/
             });
 
             markers[i] = marker;
-            markersById[data['data'][i]['id']] = marker;
-            markerContent[data['data'][i]['id']] = data['data'][i]['address'];
+            markersById[data['data'][i]['expo_id']] = marker;
 
+            var infowindow = new google.maps.InfoWindow({
+                content: '<h4>' + data['data'][i]['title'] + '</h4><p>Location: '+data['data'][i]['city'] + ', ' + data['data'][i]['state'] +'</p>'
+            });
             google.maps.event.addListener(marker, 'click', (function(marker, i) {
                 return function() {
                     if(!map.getBounds().contains(marker.getPosition()))
@@ -153,47 +160,41 @@ initializeMap();
                         map.setCenter(marker.getPosition());
                     }
 
-                    if (typeof marker.store_name == 'undefined' || typeof marker.store_pic == 'undefined') {
+                    infowindow.open(map, marker);
+                    var parameter = {
+                        id: marker.id,
+                        bounds : map.getBounds().toUrlValue()
+                    };
+                    /*if (marker.address == '' || typeof marker.address == 'undefined') {
                         jQuery.ajax({
-                            url: 'getDesc.php',
+                            url: '/locate/expo',
                             data: parameter,
                             dataType: 'json',
                             success: function(data) {
-                                console.log(data);
+
                             }
                         });
-                    } else {
-                        var infobox = new SmartInfoWindow({
-                            position: marker.getPosition(),
-                            map: map,
-                            content: content,
-                            height: height,
-                            width: width
-                        });
-                        //infowindow.setContent(marker.address+'<br><button type="button" data-dismiss="modal"  class="select-store" data-value="'+marker.id+'">Ship to this address</button>');
-                    }
+                    }*/
                 }
             })(marker, i));
             google.maps.event.addListener(marker, 'mouseover', (function(marker, i) {
                 return function() {
+
                 }
             })(marker, i));
             google.maps.event.addListener(marker, 'mouseout', (function(marker, i) {
                 return function() {
-                    mouse=1;
-                    setInterval(checkMouse,2000);
-                    $.each(selMarker, function(index, marker) {
-                    });
+
                 }
             })(marker, i));
         }
-        getDataList(selMarker);
+        getDataList(markers);
     }
 
     function AutoCenter() {
-        if (selMarker.length > 0) {
+        if (markers.length > 0) {
             var bounds = new google.maps.LatLngBounds();
-            $.each(selMarker, function(index, marker) {
+            $.each(markers, function(index, marker) {
                 bounds.extend(marker.position);
             });
             map.fitBounds(bounds);

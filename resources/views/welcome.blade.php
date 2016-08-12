@@ -6,7 +6,7 @@
 
     <!-- Responsive Meta Tag -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="http://fontawesome.io/assets/font-awesome/css/font-awesome.css">
     <!-- main stylesheet -->
     <link rel="stylesheet" href="{{ URL::to('/assets/css/style.css') }}">
     <!-- responsive stylesheet -->
@@ -106,7 +106,11 @@
                 </div>
                 <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
                     <ul>
-                        <li><input placeholder="Seach Exposition by Name or Location" type="text" style="width: 100%;border: 1px solid #ccc;height: 50px;padding: 0 20px;border-radius: 5px;line-height: 50px;outline: none;transition: all .3s ease;"></li>
+                        <li>
+                            <input placeholder="Seach Exposition by Name or Location" type="text" style="width: 75%;border: 1px solid #ccc;height: 50px;padding: 0 20px;border-radius: 5px;line-height: 50px;outline: none;transition: all .3s ease;">
+                            <button class="btn-lg btn-default reload-map"><i class="fa fa-refresh" ></i> Reload Map</button>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -862,7 +866,7 @@
 
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA52TRWk7LalmXMtqCVUQTQwbFVfgcraXw">
 </script>
-<script src="{{ URL::to('/assets/js/jquery.min.js') }}"></script>
+    <script src="{{ URL::to('/assets/js/jquery.min.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/jquery.themepunch.tools.min.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/jquery.themepunch.revolution.min.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/countdown.min.js') }}"></script>
@@ -877,7 +881,11 @@
 	<script src="{{ URL::to('/assets/js/wow.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/validate.js') }}"></script>
 	<script src="{{ URL::to('/assets/js/custom.js') }}"></script>
-    <script src="{{ URL::to('/assets/js/app.js') }}"></script>
+    <script src="{{ URL::to('/assets/plugins/backbone/json2.js') }}"></script>
+    <script src="{{ URL::to('/assets/plugins/backbone/underscore.js') }}"></script>
+    <script src="{{ URL::to('/assets/plugins/backbone/backbone-min.js') }}"></script>
+    <script src="{{ URL::to('/assets/plugins/backbone/backbone.localStorage.js') }}"></script>
+    <script src="{{ URL::to('/assets/js/backbone.js') }}"></script>
 <script>
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -885,7 +893,9 @@
                 results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
-
+    var mapObj;
+    var loadedExpo = [];
+    var map = new Map({firstLoad: 0, loadedExpo: loadedExpo, mapObj: mapObj});
 </script>
 </body>
 </html>

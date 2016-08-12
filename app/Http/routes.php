@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/backbone', function () {
+    return view('backbone');
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +40,8 @@ Route::get('logout', 'Auth\AuthController@logout');
 // Registration Routes...
 Route::get('register', 'Auth\AuthController@getRegister');
 Route::post('register', 'Auth\AuthController@postRegister');
-Route::get('/locate/expo', 'ExpositionsController@map');
+Route::get('/locate/expos', 'ExpositionsController@map');
+Route::get('/locate/expo', 'ExpositionsController@expo');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\PasswordController@getEmail');
