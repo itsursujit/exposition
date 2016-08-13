@@ -1693,7 +1693,7 @@ footer .footer-widget .photo-gallery {
 }
 footer .footer-widget .photo-gallery li {
   float: left;
-  width: 75px;
+  /*width: 75px;*/
   margin: 1.5px 1.5px;
 }
 footer .footer-widget .photo-gallery li img {
@@ -2452,4 +2452,15 @@ footer .footer-widget .social-icons a:hover {
     background-position: center center;
     background-repeat: no-repeat;
     background-image: url(../img/resources/preloader.gif);
+}
+.stand-box{
+  height:200px;
+  margin:2px;
+}
+
+.stand-content {
+  position: relative;
+  top: 40%;
+  left: 20%;
+  font-size: 22px;
 }

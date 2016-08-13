@@ -1,18 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-</head>
-<body>
-
-    <div id="map" style="height:300px;width:400px;"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA52TRWk7LalmXMtqCVUQTQwbFVfgcraXw"></script>
-    <script src="{{ URL::to('/assets/plugins/backbone/json2.js') }}"></script>
-    <script src="{{ URL::to('/assets/js/jquery.min.js') }}"></script>
-    <script src="{{ URL::to('/assets/plugins/backbone/underscore.js') }}"></script>
-    <script src="{{ URL::to('/assets/plugins/backbone/backbone-min.js') }}"></script>
-    <script src="{{ URL::to('/assets/plugins/backbone/backbone.localStorage.js') }}"></script>
-    <script src="{{ URL::to('/assets/js/backbone.js') }}"></script>
-</body>
-</html>
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3>Birthdays and Anniversaries</h3>
+</div>
+<div class="modal-body">
+    <p>This is test for the best</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa distinctio dolores doloribus eaque eligendi, facilis minus nam quibusdam repellat ut! Autem deserunt eius ex molestiae officia quaerat reprehenderit sequi velit!</p>
+</div>
+<div class="modal-footer">
+    <a href="#" data-dismiss="modal" class="btn">Close</a>
+    {#<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>#}
+</div>

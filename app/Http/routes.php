@@ -39,6 +39,8 @@ Route::get('register', 'Auth\AuthController@getRegister');
 Route::post('register', 'Auth\AuthController@postRegister');
 Route::get('/locate/expos', 'ExpositionsController@map');
 Route::get('/locate/expo', 'ExpositionsController@expo');
+Route::get('/book/expo/{id}', 'ExpositionsController@book');
+Route::get('/stand/{id}', 'ExpositionsController@stand');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\PasswordController@getEmail');

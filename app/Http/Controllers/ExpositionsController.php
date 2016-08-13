@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests;
 use App\Http\Requests\CreateExpositionsRequest;
 use App\Http\Requests\UpdateExpositionsRequest;
+use App\Models\Stand;
 use App\Repositories\ExpositionsRepository;
 use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
@@ -24,6 +25,26 @@ class ExpositionsController extends BaseController
         $this->expositionsRepository = $expositionsRepo;
     }
 
+    public function book($id){
+        $stands = DB::select("SELECT stands.*, expositions.title
+                                FROM expositions 
+                                INNER JOIN stands ON expositions.id = stands.exposition_id
+                                WHERE expositions.id = $id");
+        return view('organizations.book', compact('stands'));
+    }
+
+    public function stand($id, Request $request) {
+        $ajax = $request->ajax();
+        $stands = DB::select("SELECT distinct s.id as stand_id, s.*, o.id as organization_id, os.image, o.name, o.email,o.phone,o.admin_name, o.admin_email
+                                FROM expositions e 
+                                INNER JOIN stands s ON e.id = s.exposition_id
+                                LEFT JOIN organization_stands os ON os.stand_id = s.id
+                                LEFT JOIN organizations o ON os.organization_id = o.id
+                                WHERE s.id = $id");
+        $materials = DB::select("SELECT om.* FROM organization_marketing_items om WHERE stand_id = $id AND is_live=1");
+        return view('organizations.stand', compact('stands', 'ajax', 'materials'));
+    }
+
     public function map(){
         /*$bounds=explode(",", Input::get('bounds'));
         $lat = $bounds[0]-($bounds[0]-$bounds[2])/2;
@@ -31,12 +52,14 @@ class ExpositionsController extends BaseController
         $center = explode(",", Input::get('center'));
         $lat = $center[0];
         $lng = $center[1];
-        $map = DB::select("
-                SELECT expositions.id as expo_id, expositions.title, addresses.*,
+        $sql ="
+                SELECT expositions.id as expo_id, DATE_FORMAT(start_date,'%Y-%m-%d') as start_date, concat('.',DATE_FORMAT(start_date,'%y-%b-%d')) as date_class , expositions.title, addresses.*,
                 ( 3959 * acos( 
                 cos( radians($lat) ) * cos( radians( addresses.lat ) ) * cos( radians( addresses.lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( addresses.lat ) ) ) ) AS distance
                 FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id AND expositions.is_live = 1 HAVING distance < 3100 ORDER BY distance LIMIT 0 , 50;
-                ");
+                ";
+        //dd($sql);
+        $map = DB::select($sql);
         echo json_encode(array('data'=>$map));
     }
 
@@ -46,7 +69,8 @@ class ExpositionsController extends BaseController
         $lng = $bounds[1]-($bounds[1]-$bounds[3])/2;
         $id = Input::get('id');
         $map = DB::select("
-                SELECT expositions.id as expo_id, expositions.title, addresses.*,
+                SELECT expositions.id as expo_id, DATE_FORMAT(start_date,'%Y-%m-%d') as start_date, concat('.',DATE_FORMAT(start_date,'%y-%b-%d')) as date_class , expositions.title, addresses.*,
+                countries.iso_3166_3 as country,
                 ( 3959 * acos(
                 cos( radians($lat) ) * cos( radians( lat ) ) * cos( radians( lng ) - radians($lng) ) + sin( radians($lat) ) * sin( radians( lat ) ) ) ) AS distance
                 FROM expositions INNER JOIN addresses ON expositions.address_id = addresses.id WHERE expostions.id = '$id' ORDER BY distance LIMIT 0 , 10;
