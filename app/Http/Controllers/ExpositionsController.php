@@ -10,6 +10,7 @@ use App\Repositories\ExpositionsRepository;
 use App\Http\Controllers\AppBaseController as BaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -25,6 +26,10 @@ class ExpositionsController extends BaseController
         $this->expositionsRepository = $expositionsRepo;
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function book($id){
         $stands = DB::select("SELECT stands.*, expositions.title
                                 FROM expositions 
@@ -33,6 +38,11 @@ class ExpositionsController extends BaseController
         return view('organizations.book', compact('stands'));
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function stand($id, Request $request) {
         $ajax = $request->ajax();
         $stands = DB::select("SELECT distinct s.id as stand_id, s.*, o.id as organization_id, os.image, o.name, o.email,o.phone,o.admin_name, o.admin_email
@@ -45,10 +55,73 @@ class ExpositionsController extends BaseController
         return view('organizations.stand', compact('stands', 'ajax', 'materials'));
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function reserve($id, Request $request) {
+        $stand = DB::select("SELECT distinct s.id as stand_id, s.*, e.title as exposition_title
+                                FROM expositions e
+                                INNER JOIN stands s ON e.id = s.exposition_id
+                                WHERE s.id = $id");
+        return view('organizations.reserve', compact('stand'));
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+     * @throws \Illuminate\Foundation\Validation\ValidationException
+     */
+    public function postReserve($id, Request $request) {
+        return redirect($this->redirectPath());
+        dd($request->all());
+
+
+        $validator = $this->validator($request->all());
+
+        if ($validator->fails()) {
+            $this->throwValidationException(
+                $request, $validator
+            );
+        }
+        $stand = DB::select("SELECT distinct s.id as stand_id, s.*, e.title as exposition_title
+                                FROM expositions e
+                                INNER JOIN stands s ON e.id = s.exposition_id
+                                WHERE s.id = $id");
+        return view('organizations.reserve', compact('stand'));
+        Auth::guard($this->getGuard())->login($this->create($request->all()));
+
+        return redirect($this->redirectPath());
+    }
+
+    /**
+     * @return string
+     */
+    public function redirectPath()
+    {
+        if (property_exists($this, 'redirectPath')) {
+            return $this->redirectPath;
+        }
+
+        return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+    }
+
+    /**
+     * Get the guard to be used during registration.
+     *
+     * @return string|null
+     */
+    protected function getGuard()
+    {
+        return property_exists($this, 'guard') ? $this->guard : null;
+    }
+
+    /**
+     *
+     */
     public function map(){
-        /*$bounds=explode(",", Input::get('bounds'));
-        $lat = $bounds[0]-($bounds[0]-$bounds[2])/2;
-        $lng = $bounds[1]-($bounds[1]-$bounds[3])/2;*/
         $center = explode(",", Input::get('center'));
         $lat = $center[0];
         $lng = $center[1];
@@ -63,6 +136,9 @@ class ExpositionsController extends BaseController
         echo json_encode(array('data'=>$map));
     }
 
+    /**
+     *
+     */
     public function expo(){
         $bounds=explode(",", Input::get('bounds'));
         $lat = $bounds[0]-($bounds[0]-$bounds[2])/2;

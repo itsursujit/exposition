@@ -66,7 +66,7 @@
     <div class="modal-footer">
         <a href="#" data-dismiss="modal" class="btn btn-danger">Close</a>
         @if(!$stand->is_booked && !$stand->is_reserved)
-            <form action="/reserve/{{ $stand->stand_id }}" class="pull-right" method="post" style="margin-left: 5px;">
+            <form action="/reserve/{{ $stand->stand_id }}" class="pull-right" method="get" style="margin-left: 5px;">
                 {!! csrf_field() !!}
                 <button type="submit" class="btn btn-success">Reserve Stand</button>
             </form>

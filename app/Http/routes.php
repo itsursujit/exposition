@@ -17,19 +17,6 @@ Route::get('/backbone', function () {
 });
 
 
-/*
-|--------------------------------------------------------------------------
-| API routes
-|--------------------------------------------------------------------------
-*/
-
-Route::group(['prefix' => 'api', 'namespace' => 'API'], function () {
-    Route::group(['prefix' => 'v1'], function () {
-        require config('infyom.laravel_generator.path.api_routes');
-    });
-});
-
-
 Route::get('login', 'Auth\AuthController@getLogin');
 Route::post('login', 'Auth\AuthController@postLogin');
 Route::get('logout', 'Auth\AuthController@logout');
@@ -41,6 +28,8 @@ Route::get('/locate/expos', 'ExpositionsController@map');
 Route::get('/locate/expo', 'ExpositionsController@expo');
 Route::get('/book/expo/{id}', 'ExpositionsController@book');
 Route::get('/stand/{id}', 'ExpositionsController@stand');
+Route::get('/reserve/{id}', 'ExpositionsController@reserve');
+Route::post('/reserve/{id}', 'ExpositionsController@postReserve');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\PasswordController@getEmail');
@@ -67,11 +56,5 @@ Route::resource('orders', 'OrderController');
 
 
 Route::resource('organizationStands', 'OrganizationStandsController');
-
-Route::resource('orderItems', 'OrderItemsController');
-
-Route::resource('orderItems', 'OrderItemsController');
-
-Route::resource('orderItems', 'OrderItemsController');
 
 Route::resource('orderItems', 'OrderItemsController');
