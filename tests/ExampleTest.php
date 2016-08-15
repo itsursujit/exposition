@@ -17,11 +17,4 @@ class ExampleTest extends TestCase
              ->see('UPCOMING EXPOSITIONS');
     }
 
-    public function testVisitClick()
-    {
-        $this->visit('/')
-            ->click('visit')
-            ->seePageIs('/visit/expo/2');
-    }
-
 }
