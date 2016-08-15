@@ -39,6 +39,9 @@
                             <a href="/visit/stand/{{ $stand->id }}">Continue Visiting</a>
                         </div>
                     @endforeach
+                    @if(count($stands)<=0)
+                        <h5>No Stands Available at the Moment</h5>
+                    @endif
                 </div>
             </div>
         </div>

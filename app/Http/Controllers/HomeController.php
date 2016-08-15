@@ -28,6 +28,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
+     * @param ExpositionsRepository $expositionsRepository
      * @return \Illuminate\Http\Response
      */
     public function index(ExpositionsRepository $expositionsRepository)
@@ -48,6 +49,7 @@ class HomeController extends Controller
     }
 
     /**
+     * @Description Inserts the order being made by Organization
      * @param $status
      * @param $id
      * @param StandRepository $standRepository
@@ -83,6 +85,7 @@ class HomeController extends Controller
     }
 
     /**
+     * @Description Shows the admin dashboard after login
      * @param StandRepository $standRepository
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
      */

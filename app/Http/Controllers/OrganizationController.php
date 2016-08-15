@@ -29,6 +29,7 @@ class OrganizationController extends BaseController
     }
 
     /**
+     * Shows the stand information in details
      * @param $id
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -41,7 +42,6 @@ class OrganizationController extends BaseController
         $this->organizationRepository->updateVisitors( $stands );
 
         $materials = $this->organizationRepository->getStandMaterials( $id );
-
         return view('organizations.stand-full', compact('stands', 'ajax', 'materials'));
     }
 }

@@ -31,26 +31,35 @@ class ExpositionsController extends BaseController
     }
 
     /**
+     * @description This function retrieves the exposition stands for booking
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function book($id){
+        //Gets exposition based on id
+        $exposition = $this->expositionsRepository->getExposition($id);
+        //Gets stands based on exposition id
         $stands = $this->expositionsRepository->getExpositionStands($id);
-        return view('organizations.book', compact('stands'));
+        return view('organizations.book', compact('stands', 'exposition'));
     }
 
     /**
+     * @description User visits into different expo.
      * @param $id
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function visit($id){
+        //Gets expositions based on id
         $exposition = $this->expositionsRepository->getExposition($id);
+        //Gets live stands based on exposition id
         $stands = $this->expositionsRepository->getExpositionLiveStands($id);
+
         return view('expo', compact('stands','exposition'));
     }
 
 
     /**
+     * @description This function returns the stand details in partial or full form
      * @param $id
      * @param OrganizationRepository $organizationRepository
      * @param Request $request
@@ -66,6 +75,7 @@ class ExpositionsController extends BaseController
     }
 
     /**
+     * @description Organization will come up with the form to fill the order form along with registration
      * @param $id
      * @param Request $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -77,6 +87,7 @@ class ExpositionsController extends BaseController
 
 
     /**
+     * @description Uploads the files in Order form
      * @param $file
      * @param $uploaddir
      * @return bool|string
@@ -97,6 +108,7 @@ class ExpositionsController extends BaseController
 
 
     /**
+     * @description Order from organization is saved to different tables in this form.
      * @param $organization
      * @param $stand
      * @param $files
@@ -104,15 +116,32 @@ class ExpositionsController extends BaseController
      * @return mixed
      */
     public function putOrganizationOrder($organization, $stand, $files, OrganizationRepository $organizationRepository){
-        $document = $files['documents'];
-        $image = $files['image'];
-        $documentDestinationPath = public_path(). '/materials/';
-        $imageDestinationPath = public_path(). '/images/';
-        $imageURL = '/images/';
-        $documentURL = '/materials/';
-        $title = '';
-        $uploaddir = '';
+        $documentURL = '';
+        $documentName = '';
+        $imageURL = '';
+        $imageName = '';
+        //Upload the marketing documents if available
+        if(isset($files['documents'])) {
+            $document = $files['documents'];
+            $documentDestinationPath = public_path(). '/materials/';
+            $documentURL = '/materials/';
+            $documentName = $this->upload($document, $documentDestinationPath);
+        }
 
+        //Upload the logo of organization if available
+        if(isset($files['image'])){
+            $image = $files['image'];
+            $imageDestinationPath = public_path(). '/images/';
+            $imageURL = '/images/';
+            $imageName = $this->upload($image, $imageDestinationPath);
+        }
+
+
+
+        $title = $documentName;
+
+
+        //Saves the order generated from Organization
         $order = [
             'organization_id' => $organization->id,
             'exposition_id' => $stand->exposition_id,
@@ -121,6 +150,7 @@ class ExpositionsController extends BaseController
         ];
         $order = $organizationRepository->saveOrder($order);
 
+        //Saves the order item generated from Organization
         $orderItem = [
             'order_id' => $order->id,
             'stand_id' => $stand->id,
@@ -128,25 +158,25 @@ class ExpositionsController extends BaseController
         ];
         $orderItem = $organizationRepository->saveOrderItems($orderItem);
 
-        $imageName = $this->upload($image, $imageDestinationPath);
-
-        $documentName = $this->upload($document, $documentDestinationPath);
 
         $standItems = [
             'organization_id' => $organization->id,
             'stand_id' => $stand->id,
             'exposition_id' => $stand->exposition_id,
-            'image' => ($imageName)?$imageURL.$imageName:''
+            'image' => $imageURL.$imageName
         ];
 
         $organizationStand = $organizationRepository->saveStandItems( $standItems );
 
+        //Updates the marketing materials to stand bein ordered by Organization
         $materialItems = [
             'organization_id' => $organization->id,
             'stand_id' => $stand->id,
             'titles' => $title,
-            'path' => ($documentName)?$documentURL.$documentName:'',
-            'name' => $title
+            'path' => $documentURL.$documentName,
+            'name' => $title,
+            'is_live' => 1,
+            'is_downloadable' => 1
         ];
 
         $materials = $organizationRepository->saveMaterialItems( $materialItems );
@@ -202,7 +232,7 @@ class ExpositionsController extends BaseController
     }
 
     /**
-     *
+     * @Description Gets the Exposition based on lat and lng
      */
     public function map(){
         $center = explode(",", Input::get('center'));
@@ -213,7 +243,7 @@ class ExpositionsController extends BaseController
     }
 
     /**
-     *
+     *@Description Gets the Exposition based on exposition id
      */
     public function expo(){
         $bounds=explode(",", Input::get('bounds'));

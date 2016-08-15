@@ -19,12 +19,13 @@ class Materials extends Model
 
 
     public $fillable = [
-        'title',
+        'titles',
         'organization_id',
         'path',
         'stand_id',
         'name',
-        'is_downloadable'
+        'is_downloadable',
+        'is_live'
     ];
 
     /**

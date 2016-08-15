@@ -7,6 +7,14 @@
         <footer>
             <div class="container" style="color:white;">
                 <div class="row">
+                    <div class="tab-content-wrap">
+                        <div class="col-lg-10 col-offset-lg-2">
+                            <h3>About {{ $exposition->title }}</h3>
+                            <p>
+                                {!! $exposition->description !!}
+                            </p>
+                        </div>
+                    </div>
                     <div class="col-sm-12">
                         <h2>{{ isset($stands[0])?$stands[0]->title:'' }}</h2>
                         <h3>Stands Information</h3>
@@ -33,6 +41,9 @@
                                 @endif
                             </a>
                         @endforeach
+                        @if(count($stands)<=0)
+                            <h5>No Stands Available at the Moment</h5>
+                        @endif
                     </div>
                 </div>
             </div>
