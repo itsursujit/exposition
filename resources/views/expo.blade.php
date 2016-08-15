@@ -1,10 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
-
+    <style>
+        #exposition{
+            margin-top:150px;
+        }
+    </style>
+    <section id="exposition">
+        <div class="container">
+            <div class="row">
+                <div class="tab-content-wrap row">
+                    <div class="col-lg-10 col-offset-lg-2">
+                        <h3>About {{ $exposition->title }}</h3>
+                        <p>
+                            {!! $exposition->description !!}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
     <section id="upcoming-event">
         <div class="container">
             <div class="row">
+                <h3>Stands</h3>
                 <div class="tab-content-wrap row">
                     @foreach($stands as $key => $stand)
                         <div class="col-lg-6">
@@ -15,7 +34,7 @@
                                 {{ $stand->title }}
                             </div>
                             <div class="feature">
-                                {{ $stand->feature_details }}
+                                {!! $stand->description !!}
                             </div>
                             <a href="/visit/stand/{{ $stand->id }}">Continue Visiting</a>
                         </div>

@@ -48,10 +48,18 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        if ($e instanceof ModelNotFoundException) {
+        if($e instanceof NotFoundHttpException)
+        {
+            return response()->view('errors.503', ['errors' => $e], 404);
+        }
+        elseif($e instanceof HttpException)
+        {
+            return response()->view('errors.503', ['errors' => $e], 503);
+        }
+        elseif ($e instanceof ModelNotFoundException) {
             $e = new NotFoundHttpException($e->getMessage(), $e);
             return response()->view('errors.error', [], 405);
-        } elseif ($e instanceof AuthenticationException) {
+        }/* elseif ($e instanceof AuthenticationException) {
             return response()->view('errors.error', [], 403);
             //return $this->unauthenticated($request, $e);
         } elseif ($e instanceof AuthorizationException) {
@@ -60,7 +68,7 @@ class Handler extends ExceptionHandler
         } elseif ($e instanceof ValidationException && $e->getResponse()) {
             return response()->view('errors.error', [], 402);
             //return $e->getResponse();
-        }
+        }*/
 
         return parent::render($request, $e);
     }

@@ -29,7 +29,7 @@ Route::get('/locate/expo', 'ExpositionsController@expo');
 Route::get('/book/expo/{id}', 'ExpositionsController@book');
 Route::get('/visit/expo/{id}', 'ExpositionsController@visit');
 Route::get('/stand/{id}', 'ExpositionsController@stand');
-Route::get('/visit/stand/{id}', 'ExpositionsController@visitStand');
+Route::get('/visit/stand/{id}', 'OrganizationController@visitStand');
 Route::get('/reserve/{id}', 'ExpositionsController@reserve');
 Route::post('/reserve/{id}', 'ExpositionsController@postReserve');
 
