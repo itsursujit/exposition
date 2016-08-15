@@ -22,39 +22,23 @@ Route::post('login', 'Auth\AuthController@postLogin');
 Route::get('logout', 'Auth\AuthController@logout');
 Route::get('/', 'HomeController@index');
 // Registration Routes...
-Route::get('register', 'Auth\AuthController@getRegister');
-Route::post('register', 'Auth\AuthController@postRegister');
+/*Route::get('register', 'Auth\AuthController@getRegister');
+Route::post('register', 'Auth\AuthController@postRegister');*/
 Route::get('/locate/expos', 'ExpositionsController@map');
 Route::get('/locate/expo', 'ExpositionsController@expo');
 Route::get('/book/expo/{id}', 'ExpositionsController@book');
+Route::get('/visit/expo/{id}', 'ExpositionsController@visit');
 Route::get('/stand/{id}', 'ExpositionsController@stand');
+Route::get('/visit/stand/{id}', 'ExpositionsController@visitStand');
 Route::get('/reserve/{id}', 'ExpositionsController@reserve');
 Route::post('/reserve/{id}', 'ExpositionsController@postReserve');
+
+Route::get('/order/{status}/{id}', 'HomeController@updateOrder');
+
+Route::get('/dashboards', 'HomeController@dashboards');
 
 // Password Reset Routes...
 Route::get('password/reset', 'Auth\PasswordController@getEmail');
 Route::post('password/email', 'Auth\PasswordController@postEmail');
 Route::get('password/reset/{token}', 'Auth\PasswordController@getReset');
 Route::post('password/reset', 'Auth\PasswordController@postReset');
-
-Route::get('/home', 'HomeController@index');
-
-Route::get('generator_builder', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@builder');
-
-Route::get('field_template', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@fieldTemplate');
-
-Route::post('generator_builder/generate', '\InfyOm\GeneratorBuilder\Controllers\GeneratorBuilderController@generate');
-
-
-Route::resource('expositions', 'ExpositionsController');
-
-Route::resource('stands', 'StandController');
-
-Route::resource('organizations', 'OrganizationController');
-
-Route::resource('orders', 'OrderController');
-
-
-Route::resource('organizationStands', 'OrganizationStandsController');
-
-Route::resource('orderItems', 'OrderItemsController');

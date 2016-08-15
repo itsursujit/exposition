@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Materials;
+use App\Models\Order;
+use App\Models\OrderItems;
+use App\Models\Organization;
+use App\Models\OrganizationStands;
+use App\Models\OrganizationUser;
+use App\Models\Visitor;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests;
 use App\Http\Requests\CreateExpositionsRequest;
 use App\Http\Requests\UpdateExpositionsRequest;
 use App\Models\Stand;
 use App\Repositories\ExpositionsRepository;
 use App\Http\Controllers\AppBaseController as BaseController;
+use App\User;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +48,32 @@ class ExpositionsController extends BaseController
         return view('organizations.book', compact('stands'));
     }
 
+    public function visit($id){
+        $stands = DB::select("SELECT stands.*, og.image
+                                FROM stands 
+                                INNER JOIN organization_stands og ON og.stand_id  = stands.id
+                                WHERE og.exposition_id = $id");
+        return view('expo', compact('stands'));
+    }
+
+    public function visitStand($id, Request $request) {
+        $ajax = $request->ajax();
+        $stands = DB::select("SELECT distinct s.id as stand_id, s.*, o.id as organization_id, os.image, o.name, o.organization_email,o.phone,o.admin_name, o.admin_email
+                                FROM expositions e 
+                                INNER JOIN stands s ON e.id = s.exposition_id
+                                LEFT JOIN organization_stands os ON os.stand_id = s.id
+                                LEFT JOIN organizations o ON os.organization_id = o.id
+                                WHERE s.id = $id");
+        Visitor::create([
+            'exposition_id' => $stands[0]->exposition_id,
+            'stand_id' => $stands[0]->stand_id,
+            'ip_address' => $_SERVER['REMOTE_ADDR']
+        ]);
+        DB::update("UPDATE organization_stands SET visitors_count = visitors_count + 1 WHERE exposition_id='".$stands[0]->exposition_id."' AND stand_id = '".$stands[0]->stand_id."'");
+        $materials = DB::select("SELECT om.* FROM organization_marketing_items om WHERE stand_id = $id AND is_live=1");
+        return view('organizations.stand-full', compact('stands', 'ajax', 'materials'));
+    }
+
     /**
      * @param $id
      * @param Request $request
@@ -45,7 +81,7 @@ class ExpositionsController extends BaseController
      */
     public function stand($id, Request $request) {
         $ajax = $request->ajax();
-        $stands = DB::select("SELECT distinct s.id as stand_id, s.*, o.id as organization_id, os.image, o.name, o.email,o.phone,o.admin_name, o.admin_email
+        $stands = DB::select("SELECT distinct s.id as stand_id, s.*, o.id as organization_id, os.image, o.name, o.organization_email,o.phone,o.admin_name, o.admin_email
                                 FROM expositions e 
                                 INNER JOIN stands s ON e.id = s.exposition_id
                                 LEFT JOIN organization_stands os ON os.stand_id = s.id
@@ -68,6 +104,99 @@ class ExpositionsController extends BaseController
         return view('organizations.reserve', compact('stand'));
     }
 
+    public function putOrganization($data){
+        $organization = [
+            'name' => $data['organization_name'],
+            'organization_email' => $data['organization_email'],
+            'phone' => $data['phone'],
+            'admin_name' => $data['name'],
+            'admin_email' => $data['email'],
+        ];
+        $organization = Organization::create($organization);
+        return $organization;
+    }
+
+    public function putUser($data){
+        $user = [
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'is_admin' => 0,
+            'role' => 'ORGANIZATION',
+        ];
+        $user = User::create($user);
+        Auth::guard($this->getGuard())->login($user);
+        return $user;
+    }
+
+    public function putOrganizationUser($organizationUsers){
+        $organizationUsers = OrganizationUser::create($organizationUsers);
+    }
+
+    public function upload($file, $uploaddir) {
+        $destinationPath = $uploaddir; // upload path
+        $extension =$file->getClientOriginalExtension(); // getting image extension
+        $fileName = strtolower(str_replace(' ','-',$file->getClientOriginalName())); // renameing image
+        $file->move($destinationPath, $fileName); // uploading file to given path
+        // sending back with message
+
+    }
+
+    public function putOrganizationOrder($organization, $stand, $files){
+        $document = $files['documents'];
+        $image = $files['image'];
+        $order = [
+            'organization_id' => $organization->id,
+            'exposition_id' => $stand->exposition_id,
+            'status' => 'APPROVED',
+            'amount' => $stand->price,
+        ];
+        $order = Order::create($order);
+        $orderItem = [
+            'order_id' => $order->id,
+            'stand_id' => $stand->id,
+            'status' => 'APPROVED',
+        ];
+        $orderItem = OrderItems::create($orderItem);
+
+
+        $documentDestinationPath = public_path(). '/materials/';
+        $imageDestinationPath = public_path(). '/images/';
+        $imageURL = '/images/';
+        $documentURL = '/materials/';
+        $title = '';
+        $uploaddir = '';
+        if(!file_exists($imageDestinationPath)) File::makeDirectory($imageDestinationPath);
+        if($image->isValid()) {
+            //$imageDestinationPath .=strtolower(str_replace(' ','-',$image->getClientOriginalName()));
+            $this->upload($image, $imageDestinationPath);
+        }
+
+        if(!file_exists($documentDestinationPath)) File::makeDirectory($documentDestinationPath);
+        if($document->isValid()) {
+            $title = $document->getClientOriginalName();
+            //$documentDestinationPath .=strtolower(str_replace(' ','-',$document->getClientOriginalName()));
+            $this->upload($document, $documentDestinationPath);
+        }
+
+        $organizationStand = OrganizationStands::create([
+            'organization_id' => $organization->id,
+            'stand_id' => $stand->id,
+            'exposition_id' => $stand->exposition_id,
+            'image' => $imageURL.strtolower(str_replace(' ','-',$image->getClientOriginalName()))
+        ]);
+
+        $materials = Materials::create([
+            'organization_id' => $organization->id,
+            'stand_id' => $stand->id,
+            'titles' => $title,
+            'path' => $documentURL.strtolower(str_replace(' ','-',$document->getClientOriginalName())),
+            'name' => $title
+        ]);
+
+        return $organizationStand;
+    }
+
     /**
      * @param $id
      * @param Request $request
@@ -75,25 +204,46 @@ class ExpositionsController extends BaseController
      * @throws \Illuminate\Foundation\Validation\ValidationException
      */
     public function postReserve($id, Request $request) {
-        return redirect($this->redirectPath());
-        dd($request->all());
+        $data = $request->all();
+        $orgValidator = Validator::make($request->all(),[
+            'organization_name' => 'required',
+            'name' => 'required',
+            'organization_email' => 'required|email',
+            'email' => 'required|email|max:255|unique:users',
+            'password' => 'required|min:6|confirmed',
+        ]);
 
-
-        $validator = $this->validator($request->all());
-
-        if ($validator->fails()) {
+        if ($orgValidator->fails()) {
             $this->throwValidationException(
-                $request, $validator
+                $request, $orgValidator
             );
         }
-        $stand = DB::select("SELECT distinct s.id as stand_id, s.*, e.title as exposition_title
-                                FROM expositions e
-                                INNER JOIN stands s ON e.id = s.exposition_id
-                                WHERE s.id = $id");
-        return view('organizations.reserve', compact('stand'));
-        Auth::guard($this->getGuard())->login($this->create($request->all()));
+        $stand = Stand::find($id);
 
-        return redirect($this->redirectPath());
+        $organization = $this->putOrganization($data);
+
+        $user = $this->putUser($data);
+
+        $organizationUsers = [
+            'organization_id' => $organization->id,
+            'user_id' => $user->id,
+        ];
+
+        $this->putOrganizationUser($organizationUsers);
+
+        $orders = $this->putOrganizationOrder($organization, $stand, $request->file());
+
+        if($data['order'] == 'reserve'){
+            $stand->is_reserve = 1;
+        }
+        elseif($data['order'] == 'book') {
+            $stand->is_booked = 1;
+        }
+        $stand->update();
+        return redirect('/dashboards');
+        //
+
+        //return redirect($this->redirectPath());
     }
 
     /**

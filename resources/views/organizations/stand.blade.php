@@ -58,7 +58,7 @@
             <p>
                 {{ $stand->name }} <br>
                 {{ $stand->phone }} <br>
-                {{ $stand->email }} <br>
+                {{ $stand->organization_email }} <br>
                 {{ $stand->admin_name }}, {{ $stand->admin_email }}
             </p>
         @endif
@@ -67,10 +67,11 @@
         <a href="#" data-dismiss="modal" class="btn btn-danger">Close</a>
         @if(!$stand->is_booked && !$stand->is_reserved)
             <form action="/reserve/{{ $stand->stand_id }}" class="pull-right" method="get" style="margin-left: 5px;">
-                {!! csrf_field() !!}
                 <button type="submit" class="btn btn-success">Reserve Stand</button>
             </form>
         @endif
     </div>
     @endforeach
+
+
 @endif
